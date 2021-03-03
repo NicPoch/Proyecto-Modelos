@@ -14,7 +14,6 @@ matrixQFunc<-function(maxP,maxC,lambdaC,lambdaP)
     sz<-c(sz,c(paste(c(0),c(j),sep = ",")))
   }
   estados_Definitivos <- sz
-  print(sz)
   matrizQ <- matrix(0, nrow = length(estados_Definitivos), ncol = length(estados_Definitivos))
   dimnames(matrizQ) <- list(estados_Definitivos,estados_Definitivos)
   for(filas in estados_Definitivos)
@@ -57,3 +56,5 @@ matrizQBosa<-matrixQFunc(maxP=13,maxC=31,lambdaC=0.8031,lambdaP=0.83/24)
 matrizQSuba<-matrixQFunc(maxP=18,maxC=26,lambdaC=0.8163 ,lambdaP=1.5/24)
 
 CMTC_Kennedy <- new(Class="ctmc", generator = matrizQKennedy,states=colnames(matrizQKennedy))
+CMTC_Bosa <- new(Class="ctmc", generator = matrizQBosa,states=colnames(matrizQBosa))
+CMTC_Suba <- new(Class="ctmc", generator = matrizQSuba,states=colnames(matrizQSuba))
