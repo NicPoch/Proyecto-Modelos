@@ -49,3 +49,32 @@ fdst<-fitdist(Casos_Reportados_Suba_Hora$Casos,distr = "exp")
 tempEst<-gofstat(fdst)
 summary(fdst)
 #-------------Encuesta de Seguridad--------------------------------------------
+infoEncuesta<-matrix(0,ncol = 4,nrow = 1)
+infoEncuesta<-data.frame(infoEncuesta)
+colnames(infoEncuesta)<-list("index","Estado N","Estado N+1","Delta")
+dLength<-length(Encuesta_Seguridad$Semana)
+for(i in 1:dLength)
+{
+  temp<-data.frame(list(i,Encuesta_Seguridad[i,"Percepción"],Encuesta_Seguridad[i+1,"Percepción"],Encuesta_Seguridad[i+1,"Número de policías"]-Encuesta_Seguridad[i,"Número de policías"]))
+  colnames(temp)<-list("index","Estado N","Estado N+1","Delta")
+  infoEncuesta<-rbind(infoEncuesta,temp)
+}
+infoEncuesta<-infoEncuesta[2:dLength,]
+estadoNBueno<-infoEncuesta[infoEncuesta$`Estado N`=="Buena",]
+estadoNRegular<-infoEncuesta[infoEncuesta$`Estado N`=="Regular",]
+estadoNMalo<-infoEncuesta[infoEncuesta$`Estado N`=="Mala",]
+
+descdist(estadoNBueno$Delta)
+descdist(estadoNBueno$Delta[estadoNBueno$`Estado N+1`=="Buena"])
+descdist(estadoNBueno$Delta[estadoNBueno$`Estado N+1`=="Regular"])
+descdist(estadoNBueno$Delta[estadoNBueno$`Estado N+1`=="Mala"])
+
+descdist(estadoNRegular$Delta)
+descdist(estadoNRegular$Delta[estadoNRegular$`Estado N+1`=="Buena"])
+descdist(estadoNRegular$Delta[estadoNRegular$`Estado N+1`=="Regular"])
+descdist(estadoNRegular$Delta[estadoNRegular$`Estado N+1`=="Mala"])
+
+descdist(estadoNMalo$Delta)
+descdist(estadoNMalo$Delta[estadoNMalo$`Estado N+1`=="Buena"])
+descdist(estadoNMalo$Delta[estadoNMalo$`Estado N+1`=="Regular"])
+descdist(estadoNMalo$Delta[estadoNMalo$`Estado N+1`=="Mala"])
