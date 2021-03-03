@@ -58,3 +58,7 @@ matrizQSuba<-matrixQFunc(maxP=18,maxC=26,lambdaC=0.8163 ,lambdaP=1.5/24)
 CMTC_Kennedy <- new(Class="ctmc", generator = matrizQKennedy,states=colnames(matrizQKennedy))
 CMTC_Bosa <- new(Class="ctmc", generator = matrizQBosa,states=colnames(matrizQBosa))
 CMTC_Suba <- new(Class="ctmc", generator = matrizQSuba,states=colnames(matrizQSuba))
+
+Embebida_Kennedy <- generatorToTransitionMatrix(matrizQKennedy)
+Embebida_Bosa <- generatorToTransitionMatrix(matrizQBosa)
+Embebida_Suba <- generatorToTransitionMatrix(matrizQSuba)
