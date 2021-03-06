@@ -2,6 +2,9 @@
 library(readxl)
 library(markovchain)
 library(expm)
+library(plotly)
+library(MASS)
+library(fitdistrplus)
 #-------------------------Datos------------------------------------
 Encuesta_Seguridad <- read_excel("Encuesta_Seguridad.xlsx")
 Validacion_Utilidades <- read_excel("Validacion_Utilidades.xlsx",col_types = c("date", "numeric"))
@@ -85,9 +88,13 @@ for(i in estadosFinales)
 }
 View(matrizP)
 CMTD_Percepcion<-new("markovchain",states=colnames(matrizP),transitionMatrix=matrizP)
+#---------------------------------------Steady States--------------------------------------
+
 #-----------------------------Verificar con validación-------------------------------------
 #Estado inicial
-alpha<-rep(0,length(colnames(matrizP)))
+alpha<-poliPorEstado<-matrix(c(rep(c(2,0,1,3,4),3)),ncol = 1,nrow = 15)
+steadyStatesPerc<-steadyStates(CMTD_Percepcion)
+print((((steadyStatesPerc%*%poliPorEstado)*500)+100))rep(0,length(colnames(matrizP)))
 alpha<-matrix(alpha,ncol=length(alpha),nrow = 1)
 colnames(alpha)<-colnames(matrizP)
 estadoInit<-paste(Encuesta_Seguridad$Percepción[1],as.integer((Encuesta_Seguridad$`Número de policías`[1]-100)/500),sep=",")
