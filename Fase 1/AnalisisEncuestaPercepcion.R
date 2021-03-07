@@ -128,6 +128,13 @@ for(mes in meses)
   ValidMatrix[mes,3]<-Validacion_Utilidades$Utilidades[mes]
   ValidMatrix[mes,4]<-ValidMatrix[mes,3]-ValidMatrix[mes,2]
 }
+ValidMatrix<-data.frame(ValidMatrix)
+plotdist(ValidMatrix[,4])
+descdist(ValidMatrix[,4],boot=1000)
+fstDatos<-fitdist(ValidMatrix[,4],"norm")
+summary(fstDatos)
+gfstat<-gofstat(fstDatos)
+View(gfstat)
 View(ValidMatrix)
 #------------------------------------------------Probabilidades de estados----------------------
 alphaT<-rep(0,length(colnames(matrizP)))
@@ -144,3 +151,4 @@ colnames(matrizProbabilidesEstado)<-estadosFinales
 View(alphaT)
 View(matrizProbabilidesEstado)
 View(rowSums(matrizProbabilidesEstado))
+matrizProbabilidesEstado<-data.frame(matrizProbabilidesEstado)
