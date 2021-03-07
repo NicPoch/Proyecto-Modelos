@@ -89,12 +89,14 @@ for(i in estadosFinales)
 View(matrizP)
 CMTD_Percepcion<-new("markovchain",states=colnames(matrizP),transitionMatrix=matrizP)
 #---------------------------------------Steady States--------------------------------------
-
-#-----------------------------Verificar con validación-------------------------------------
-#Estado inicial
-alpha<-poliPorEstado<-matrix(c(rep(c(2,0,1,3,4),3)),ncol = 1,nrow = 15)
+poliPorEstado<-matrix(c(rep(c(2,0,1,3,4),3)),ncol = 1,nrow = 15)
 steadyStatesPerc<-steadyStates(CMTD_Percepcion)
-print((((steadyStatesPerc%*%poliPorEstado)*500)+100))rep(0,length(colnames(matrizP)))
+print((((steadyStatesPerc%*%poliPorEstado)*500)+100))
+#-----------------------------Verificar con validación-------------------------------------
+#prepross validación
+Validacion_Utilidades<-Validacion_Utilidades[44:length(Validacion_Utilidades$Mes),]
+#Estado inicial
+alpha<-rep(0,length(colnames(matrizP)))
 alpha<-matrix(alpha,ncol=length(alpha),nrow = 1)
 colnames(alpha)<-colnames(matrizP)
 estadoInit<-paste(Encuesta_Seguridad$Percepción[1],as.integer((Encuesta_Seguridad$`Número de policías`[1]-100)/500),sep=",")
@@ -104,7 +106,7 @@ ingresos<-c(rep(50000437450,5),rep(43330151900,5),rep(30080406700,5))
 ingresos<-matrix(ingresos,ncol = length(ingresos),nrow = 1)
 colnames(ingresos)<-colnames(matrizP)
 #Egresos por mantenimiento
-egresos<-rep(c((416250+67230)*((2*500)+100),416250*((0*500)+100),(416250+67230)*((1*500)+100),(416250+67230)*((3*500)+100),(416250+67230)*((4*500)+100)),3)
+egresos<-rep(c((416250+67230)*((2*500)+100),(416250+67230)*((0*500)+100),(416250+67230)*((1*500)+100),(416250+67230)*((3*500)+100),(416250+67230)*((4*500)+100)),3)
 egresos<-matrix(egresos,ncol = length(egresos),nrow = 1)
 colnames(egresos)<-colnames(matrizP)
 #Creacion de la matriz
@@ -116,8 +118,9 @@ for(mes in meses)
   ingresoMes<-0
   for(semana in 1:4)
   {
-    ingresoSemana<-ingresos%*%t(alpha%*%matrizP^(semana+((mes-1)*4)))
-    egresoSemana<-(egresos%*%t(alpha%*%matrizP^(semana+((mes-1)*4))))+150450
+    pi_n<-alpha%*%(matrizP%^%(semana+((mes-1)*4)))
+    ingresoSemana<-(ingresos%*%t(pi_n))*(0.03)
+    egresoSemana<-(egresos%*%t(pi_n))+150450
     ingresoMes<-ingresoMes+(ingresoSemana-egresoSemana)
   }
   ValidMatrix[mes,1]<-as.Date.character(Validacion_Utilidades$Mes[mes])
@@ -126,3 +129,18 @@ for(mes in meses)
   ValidMatrix[mes,4]<-ValidMatrix[mes,3]-ValidMatrix[mes,2]
 }
 View(ValidMatrix)
+#------------------------------------------------Probabilidades de estados----------------------
+alphaT<-rep(0,length(colnames(matrizP)))
+alphaT<-matrix(alphaT,ncol=length(alpha),nrow = 1)
+colnames(alphaT)<-colnames(matrizP)
+estadoInit<-paste(Encuesta_Seguridad$Percepción[1],as.integer((Encuesta_Seguridad$`Número de policías`[1]-100)/500),sep=",")
+alphaT[1,estadoInit]<-1
+matrizProbabilidesEstado<-matrix(0,ncol=length(estadosFinales),nrow = length(Validacion_Utilidades$Mes)*4)
+for(r in 1:length(matrizProbabilidesEstado))
+{
+  matrizProbabilidesEstado[r,]<-alphaT%*%(matrizP%^%(r))
+}
+colnames(matrizProbabilidesEstado)<-estadosFinales
+View(alphaT)
+View(matrizProbabilidesEstado)
+View(rowSums(matrizProbabilidesEstado))
