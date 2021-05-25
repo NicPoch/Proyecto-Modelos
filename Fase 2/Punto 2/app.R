@@ -11,6 +11,7 @@ library(shiny)
 library(expm)
 library(markovchain)
 library(readxl)
+library(igraph)
 source("metodos.R")
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -42,8 +43,8 @@ server <- function(input, output) {
        {
          archivo<-"Casos2019_Hist.xlsx"
        }
-       CMTD<-cargarCadena(archivo)
-       paste("El tiempo esperado que dura un caso en el SPA empezando en ",input$EstadoInicial," es de ",tiempoEsperadoCaso(input$EstadoInicial,CMTD),sep="")
+       CMTD<-cargarCadena(as.character(archivo[1]))
+       paste("El tiempo esperado que dura un caso en el SPA empezando en ",input$EstadoInicial," es de ",tiempoEsperadoCaso(input$EstadoInicial,CMTD)," semanas",sep="")
      })
      output$answer2<-renderText({
        archivo<-input$ArchivoEntrada
@@ -51,7 +52,7 @@ server <- function(input, output) {
        {
          archivo<-"Casos2019_Hist.xlsx"
        }
-       CMTD<-cargarCadena(archivo)
+       CMTD<-cargarCadena(as.character(archivo[1]))
        paste("La probabilidad de que un ciudadano que entre en ",input$EstadoInicial," y salga resocializado es de ",pResocializado(input$EstadoInicial,CMTD),sep="")
      })
     output$plot<-renderPlot({
@@ -60,8 +61,8 @@ server <- function(input, output) {
       {
         archivo<-"Casos2019_Hist.xlsx"
       }
-      CMTD<-cargarCadena(archivo)
-      plot(CMTD)
+      CMTD<-cargarCadena(as.character(archivo[1]))
+      plot(CMTD,layout=layout.circle,main="Cadena de Markov del SPA",rescale = TRUE,asp=1,edge.arrow.size=0.7,curved=T,vertex.label.cex=0.5,edge.label.cex=0.7)
     })
   
 }

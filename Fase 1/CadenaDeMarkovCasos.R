@@ -34,8 +34,8 @@ matrixQFunc<-function(maxC,lambdaIn,lambdaOut,policias)
 }
 #----------------Crear matrices Q----------------------------------------------------------------
 matrizQKennedy<-matrixQFunc(maxC=40,lambdaIn=0.3801787,lambdaOut=1/24,policias = 8)
-matrizQBosa<-matrixQFunc(maxC=31,lambdaIn=0.4574637,lambdaOut=0.83/24,policias = 13)
-matrizQSuba<-matrixQFunc(maxC=26,lambdaIn=0.4203695,lambdaOut=1.5/24,policias = 18)
+matrizQBosa<-matrixQFunc(maxC=31,lambdaIn=0.4574637,lambdaOut=1/20,policias = 13)
+matrizQSuba<-matrixQFunc(maxC=26,lambdaIn=0.4203695,lambdaOut=1/36,policias = 18)
 #------------------Usar paquete markovchain sobre las matrices-----------------------------------
 CMTC_Kennedy <- new(Class="ctmc", generator = matrizQKennedy,states=colnames(matrizQKennedy))
 CMTC_Bosa <- new(Class="ctmc", generator = matrizQBosa,states=colnames(matrizQBosa))

@@ -3,8 +3,8 @@ library(expm)
 library(markovchain)
 #---------------Variables---------------------------------------
 #Tasas
-lambda_llegada<-0.4
-lambda_123<-1/25
+lambda_llegada<-25
+lambda_123<-60/9
 lambda_policia<-1/(40/60)
 lambda_uri<-1
 #servidores
