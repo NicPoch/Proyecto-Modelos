@@ -9,6 +9,9 @@
 
 library(shiny)
 library(shinydashboard)
+library(plotly)
+library(MASS)
+library(fitdistrplus)
 library(expm)
 library(markovchain)
 library(readxl)
@@ -18,6 +21,7 @@ library(ggplot2)
 source("metodosFase1.R")
 source("metodosFase2.R")
 source("metodosFase3.R")
+source("utilidadesFase1.R")
 # Definir la interfaz 
 ui <- dashboardPage(
   dashboardHeader(title="ModelandoAndo"),
