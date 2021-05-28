@@ -13,19 +13,19 @@ utilidades<-function(combustible,dotacion,salario)
   #-----------------------Preprocesar--------------------------------
   infoEncuesta<-matrix(0,ncol = 5,nrow = 1)
   infoEncuesta<-data.frame(infoEncuesta)
-  colnames(infoEncuesta)<-list("Estado N Percepcion","Estado N Policías","Estado N+1 Percepcion","Estado N+1 Policías","Freq")
+  colnames(infoEncuesta)<-list("Estado N Percepcion","Estado N policias","Estado N+1 Percepcion","Estado N+1 policias","Freq")
   dLength<-length(Encuesta_Seguridad$Semana)
   for(i in 1:dLength)
   {
-    temp<-data.frame(list(Encuesta_Seguridad[i,"Percepción"],as.integer((Encuesta_Seguridad[i,"Número de policías"]-100)/500),Encuesta_Seguridad[i+1,"Percepción"],as.integer((Encuesta_Seguridad[i+1,"Número de policías"]-100)/500),1))
-    colnames(temp)<-list("Estado N Percepcion","Estado N Policías","Estado N+1 Percepcion","Estado N+1 Policías","Freq")
+    temp<-data.frame(list(Encuesta_Seguridad[i,"Percepcion"],as.integer((Encuesta_Seguridad[i,"Numero de policias"]-100)/500),Encuesta_Seguridad[i+1,"Percepcion"],as.integer((Encuesta_Seguridad[i+1,"Numero de policias"]-100)/500),1))
+    colnames(temp)<-list("Estado N Percepcion","Estado N policias","Estado N+1 Percepcion","Estado N+1 policias","Freq")
     infoEncuesta<-rbind(infoEncuesta,temp)
   }
   infoEncuesta<-infoEncuesta[2:dLength,]
-  infoEncuesta$`Estado N Policías`<-round(infoEncuesta$`Estado N Policías`,digits = 0)
-  infoEncuesta$`Estado N+1 Policías`<-round(infoEncuesta$`Estado N+1 Policías`,digits = 0)
-  infoEncuestaAgg<-aggregate(x=infoEncuesta$Freq,by=list(infoEncuesta$`Estado N Percepcion`,infoEncuesta$`Estado N Policías`,infoEncuesta$`Estado N+1 Percepcion`,infoEncuesta$`Estado N+1 Policías`),FUN=sum)
-  colnames(infoEncuestaAgg)<-list("Estado N Percepcion","Estado N Policías","Estado N+1 Percepcion","Estado N+1 Policías","Freq")
+  infoEncuesta$`Estado N policias`<-round(infoEncuesta$`Estado N policias`,digits = 0)
+  infoEncuesta$`Estado N+1 policias`<-round(infoEncuesta$`Estado N+1 policias`,digits = 0)
+  infoEncuestaAgg<-aggregate(x=infoEncuesta$Freq,by=list(infoEncuesta$`Estado N Percepcion`,infoEncuesta$`Estado N policias`,infoEncuesta$`Estado N+1 Percepcion`,infoEncuesta$`Estado N+1 policias`),FUN=sum)
+  colnames(infoEncuestaAgg)<-list("Estado N Percepcion","Estado N policias","Estado N+1 Percepcion","Estado N+1 policias","Freq")
   probabilidadesNN1<-matrix(0,ncol=5,nrow = 1)
   probabilidadesNN1<-data.frame(probabilidadesNN1)
   colnames(probabilidadesNN1)<-list("Percepcion N","Policias N","Percepcion N+1","Policias N+1","Prob")
@@ -33,16 +33,16 @@ utilidades<-function(combustible,dotacion,salario)
   for(pn in unique(infoEncuestaAgg$`Estado N Percepcion`))
   {
     tempPerc<-infoEncuestaAgg[infoEncuestaAgg$`Estado N Percepcion`==pn,]
-    for(cn in unique(infoEncuestaAgg$`Estado N Policías`))
+    for(cn in unique(infoEncuestaAgg$`Estado N policias`))
     {
-      tempPercPol<-tempPerc[tempPerc$`Estado N Policías`==cn,]
+      tempPercPol<-tempPerc[tempPerc$`Estado N policias`==cn,]
       totalEv<-sum(tempPercPol$Freq)
       for(pn1 in unique(infoEncuestaAgg$`Estado N+1 Percepcion`))
       {
         tempPercPolPerc1<-tempPercPol[tempPercPol$`Estado N+1 Percepcion`==pn1,]
-        for(cn1 in unique(infoEncuestaAgg$`Estado N+1 Policías`))
+        for(cn1 in unique(infoEncuestaAgg$`Estado N+1 policias`))
         {
-          tempPercPolPerc1Pol1<-tempPercPolPerc1[tempPercPolPerc1$`Estado N+1 Policías`==cn1,]
+          tempPercPolPerc1Pol1<-tempPercPolPerc1[tempPercPolPerc1$`Estado N+1 policias`==cn1,]
           ansP<-0
           if(length(tempPercPolPerc1Pol1$Freq)!=0)
           {
@@ -86,6 +86,7 @@ utilidades<-function(combustible,dotacion,salario)
     }
   }
   CMTD_Percepcion<-new("markovchain",states=colnames(matrizP),transitionMatrix=matrizP)
+  View(matrizP)
   #---------------------------------------Steady States--------------------------------------
   poliPorEstado<-matrix(c(rep(c(2,0,1,3,4),3)),ncol = 1,nrow = 15)
   steadyStatesPerc<-steadyStates(CMTD_Percepcion)
@@ -93,10 +94,11 @@ utilidades<-function(combustible,dotacion,salario)
   ingresos<-c(rep(50000437450,5),rep(43330151900,5),rep(30080406700,5))
   ingresos<-matrix(ingresos,nrow = length(ingresos),ncol = 1)
   #Egresos por mantenimiento
-  egresos<-rep(c((salario+dotacion)*((2*500)+100),(salario+dotacion)*((0*500)+100),(salario+dotacion)*((1*500)+100),(salario+dotacion)*((3*500)+100),(salario+dotacion)*((4*500)+100)),3)
+  egresos<-rep(c((salario+dotacion+combustible)*((2*500)+350),(salario+dotacion+combustible)*((0*500)+350),(salario+dotacion+combustible)*((1*500)+350),(salario+dotacion+combustible)*((3*500)+350),(salario+dotacion+combustible)*((4*500)+350)),3)
   egresos<-matrix(egresos,nrow = length(ingresos),ncol = 1)
+  View((steadyStatesPerc%*%ingresos)*0.03)
+  View((steadyStatesPerc%*%egresos))
   
-  
-  utilidad<-(steadyStatesPerc%*%ingresos)-(steadyStatesPerc%*%egresos)
-  return(utilidad[1,1])
+  utilidad<-((steadyStatesPerc%*%ingresos)*0.03)-(steadyStatesPerc%*%egresos)
+  return(utilidad[1,1]*4)
 }

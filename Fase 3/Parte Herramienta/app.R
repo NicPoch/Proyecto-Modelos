@@ -56,9 +56,9 @@ ui <- dashboardPage(
               sidebarLayout(
                 sidebarPanel(
                   h2("Costos"),
-                  numericInput(inputId="Costos_F1",label = "Salario", 1,0),
-                  numericInput(inputId="Combustible_F1",label = "Combustible", 1,0),
-                  numericInput(inputId="Salario_F1",label = "Dotación", 1,0)
+                  numericInput(inputId="Costos_F1",label = "Salario", 416250,0),
+                  numericInput(inputId="Combustible_F1",label = "Combustible", 150450,0),
+                  numericInput(inputId="Salario_F1",label = "Dotación", 67230,0)
                 ),
                 mainPanel(
                   h2("Útilidad de la Alcaldía"),
