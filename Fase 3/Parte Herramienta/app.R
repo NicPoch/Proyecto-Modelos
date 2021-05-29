@@ -46,7 +46,7 @@ ui <- dashboardPage(
                   numericInput(inputId="PoliciasCAIB_F1",label = "Cantidad de Policías Promedio", value = 13,min=1)
                 ),
                 mainPanel(
-                  h2("Gráficas"),
+                  h3("Gráficas"),
                   plotlyOutput(outputId = 'plotE_F1'),
                   plotlyOutput(outputId = 'plotV_F1')
                 )
@@ -56,13 +56,13 @@ ui <- dashboardPage(
               sidebarLayout(
                 sidebarPanel(
                   h2("Costos"),
-                  numericInput(inputId="Costos_F1",label = "Salario", 416250,0),
-                  numericInput(inputId="Combustible_F1",label = "Combustible", 150450,0),
-                  numericInput(inputId="Salario_F1",label = "Dotación", 67230,0)
+                  numericInput(inputId="Costos_F1",label = "Salario (COP$)", 416250,0),
+                  numericInput(inputId="Combustible_F1",label = "Combustible (COP$)", 150450,0),
+                  numericInput(inputId="Salario_F1",label = "Dotación (COP$)", 67230,0)
                 ),
                 mainPanel(
                   h2("Útilidad de la Alcaldía"),
-                  textOutput(outputId = "utilidad_F1")
+                  div(textOutput(outputId = "utilidad_F1"),style="font-size:2vw")
                 )
               )
       ),
@@ -73,8 +73,8 @@ ui <- dashboardPage(
                   selectInput(inputId='EstadoInicial', label='Elegir estado inicial', choices=c("Imputado","Acusado pena no privativa","Liberado reincidente","Acusado pena privativa"))
                 ),
                 mainPanel(
-                  textOutput(outputId = 'answer1_F2'),
-                  textOutput(outputId = 'answer2_F2'),
+                  div(textOutput(outputId = 'answer1_F2'),style="font-size:1vw"),
+                  div(textOutput(outputId = 'answer2_F2'),style="font-size:1vw"),
                   plotOutput(outputId = 'plot_F2')
                 )
               )
@@ -89,9 +89,8 @@ ui <- dashboardPage(
                   textOutput(outputId = 'puntajeS_F3')
                 ),
                 mainPanel(
-                  textOutput(outputId = 'answer1_F3'),
-                  plotOutput(outputId = 'plot_F3'),
-                  textOutput(outputId = 'answer2_F3')
+                  h1("Politícas de Decisión"),
+                  plotOutput(outputId = 'plot_F3')
                 )
               )
       )
@@ -125,7 +124,7 @@ server <- function(input, output)
     figF}
   )
   output$utilidad_F1<-renderText({
-    utilidades(input$Combustible_F1,input$Costos_F1,input$Salario_F1)
+    paste("$",utilidades(input$Combustible_F1,input$Costos_F1,input$Salario_F1)," COP",sep="")
   })
   #--------------Fase 2--------------------------
   #Arreglar font 
@@ -136,7 +135,7 @@ server <- function(input, output)
       archivo<-"Casos2019_Hist.xlsx"
     }
     CMTD<-cargarCadena(as.character(archivo[1]))
-    paste("El tiempo esperado que dura un caso en el SPA empezando en ",input$EstadoInicial," es de ",tiempoEsperadoCaso(input$EstadoInicial,CMTD)," semanas",sep="")
+    paste("El tiempo esperado que dura un caso en el SPA empezando en ",input$EstadoInicial," es de ",tiempoEsperadoCaso(input$EstadoInicial,CMTD)," semanas.",sep="")
   })
   output$answer2_F2<-renderText({
     archivo<-input$ArchivoEntrada
@@ -145,7 +144,7 @@ server <- function(input, output)
       archivo<-"Casos2019_Hist.xlsx"
     }
     CMTD<-cargarCadena(as.character(archivo[1]))
-    paste("La probabilidad de que un ciudadano que entre en ",input$EstadoInicial," y salga resocializado es de ",pResocializado(input$EstadoInicial,CMTD),sep="")
+    paste("La probabilidad de que un ciudadano que entre en ",input$EstadoInicial," y salga resocializado es de ",pResocializado(input$EstadoInicial,CMTD),".",sep="")
   })
   output$plot_F2<-renderPlot({
     archivo<-input$ArchivoEntrada

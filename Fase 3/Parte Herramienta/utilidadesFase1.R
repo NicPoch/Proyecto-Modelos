@@ -86,7 +86,6 @@ utilidades<-function(combustible,dotacion,salario)
     }
   }
   CMTD_Percepcion<-new("markovchain",states=colnames(matrizP),transitionMatrix=matrizP)
-  View(matrizP)
   #---------------------------------------Steady States--------------------------------------
   poliPorEstado<-matrix(c(rep(c(2,0,1,3,4),3)),ncol = 1,nrow = 15)
   steadyStatesPerc<-steadyStates(CMTD_Percepcion)
@@ -96,8 +95,6 @@ utilidades<-function(combustible,dotacion,salario)
   #Egresos por mantenimiento
   egresos<-rep(c((salario+dotacion+combustible)*((2*500)+350),(salario+dotacion+combustible)*((0*500)+350),(salario+dotacion+combustible)*((1*500)+350),(salario+dotacion+combustible)*((3*500)+350),(salario+dotacion+combustible)*((4*500)+350)),3)
   egresos<-matrix(egresos,nrow = length(ingresos),ncol = 1)
-  View((steadyStatesPerc%*%ingresos)*0.03)
-  View((steadyStatesPerc%*%egresos))
   
   utilidad<-((steadyStatesPerc%*%ingresos)*0.03)-(steadyStatesPerc%*%egresos)
   return(utilidad[1,1]*4)
